@@ -11,8 +11,8 @@ parser.add_argument("IP", type=ipaddress.ip_address,
         help = 'IP address of server to test.')
 parser.add_argument('--tcp', action='store_true',
         help = 'Use TCP instead of UDP')
-parser.add_argument('--timeout', action='store', type=float, default=0.5,
-        help = 'Timeout for DNS queries in seconds. Default to 0.5s')
+parser.add_argument('--timeout', action='store', type=float, default=1.0,
+        help = 'Timeout for DNS queries in seconds. Default to 1.0s')
 parser.add_argument('--verbose', action='store_true',
         help = 'Verbose output.')
 args = parser.parse_args()
@@ -58,5 +58,5 @@ for domain, soa in ok_domains:
     logi("OK %s, %s" % (domain, soa))
 for domain, exception in failed_domains:
     print("ERR", domain, type(exception), str(exception), sep=', ')
-logi("Elapsed time: %f seconds" % (end_time - start_time))
+logi("Elapsed time: %0.3f seconds" % (end_time - start_time))
 
