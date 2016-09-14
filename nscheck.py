@@ -1,18 +1,25 @@
 # coding: utf-8
 
 import argparse
-import ipaddress
 import time
+import socket
 import dns.resolver
+
+def ip_or_hostname(argument):
+    """ receives an ip or hostname, returns ip or raises ValueError """
+    try:
+        return socket.gethostbyname(argument)
+    except socket.gaierror as e:
+        raise ValueError(str(e))
 
 # Parse command line args
 parser = argparse.ArgumentParser(description='Test leg.br nameserver.')
-parser.add_argument("IP", type=ipaddress.ip_address,
-        help = 'IP address of server to test.')
+parser.add_argument("NAMESERVER", type=ip_or_hostname,
+        help = 'IP address or hostname of server to test.')
 parser.add_argument('--tcp', action='store_true',
         help = 'Use TCP instead of UDP')
-parser.add_argument('--timeout', action='store', type=float, default=1.0,
-        help = 'Timeout for DNS queries in seconds. Default to 1.0s')
+parser.add_argument('--timeout', action='store', type=float, default=5.0,
+        help = 'Timeout for DNS queries in seconds. Default to 5.0s')
 parser.add_argument('--verbose', action='store_true',
         help = 'Verbose output.')
 args = parser.parse_args()
@@ -21,18 +28,17 @@ UFS=['ac', 'al', 'ap', 'am', 'ba', 'ce', 'df', 'es', 'go', 'ma', 'mt',
         'ms', 'mg', 'pa', 'pb', 'pr', 'pe', 'pi', 'rj', 'rn', 'rs',
         'ro', 'rr', 'sc', 'sp', 'se', 'to']
 DOMAINS=['infra.leg.br']
-
 for uf in UFS:
     DOMAINS.append(uf+'.leg.br')
 
 # dns resolver setup
 resolver = dns.resolver.Resolver()
-resolver.nameservers = [str(args.IP)]
+resolver.nameservers = [str(args.NAMESERVER)]
 resolver.lifetime = args.timeout
 resolver.search = []
 
-# log information
 def logi(message):
+    """ log information """
     if args.verbose:
         print(message)
 
