@@ -10,6 +10,6 @@ Check requirements.txt for more details.
 
 Usage guidelines
 ================
-. Work inside a virtualenv
-. To build a binary: pyinstaller --onefile nscheck.py
+ * Work inside a virtualenv
+ * To build a binary: pyinstaller --onefile nscheck.py
 
